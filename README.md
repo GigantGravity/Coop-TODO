@@ -10,6 +10,10 @@ Eine schlichte, geteilte To-do-Liste für kleine Gruppen. Änderungen erscheinen
 
 - Mehrere Listen/Kategorien anlegen, umbenennen und löschen
 - Aufgaben anlegen, abhaken, bearbeiten (Titel + Notiz) und löschen
+- Unteraufgaben (Checkliste pro Aufgabe) mit Fortschrittsanzeige, z. B. „☑ 2/5“
+- Prioritäten (hoch, normal, niedrig): offene Aufgaben werden danach gruppiert
+- Reihenfolge von Listen und Aufgaben per Drag & Drop am Griff ⠿ ändern, auch am Handy.
+  Wer eine Aufgabe in eine andere Prioritätsgruppe zieht, ändert damit ihre Priorität.
 - Aufgaben einer Person zuweisen
 - Filter: erledigte ausblenden, nur meine oder nicht zugewiesene Aufgaben anzeigen
 - Anmeldung mit E-Mail und Passwort, Hell-/Dunkelmodus, auch am Handy nutzbar
@@ -52,6 +56,17 @@ Danach <http://localhost:8000> öffnen.
 3. In Supabase unter **Authentication → URL Configuration** diese Adresse als **Site URL** eintragen,
    damit die Links in Bestätigungs-E-Mails dorthin führen.
 
+## Updates für bestehende Installationen
+
+Neue Funktionen brauchen manchmal Änderungen an der Datenbank. Diese liegen in `supabase/updates/`
+und werden **einmal** im SQL Editor ausgeführt, der Reihe nach und am besten vor dem Hochladen des neuen Codes:
+
+| Datei | Inhalt |
+|---|---|
+| `002_unteraufgaben_prioritaet_reihenfolge.sql` | Unteraufgaben, Prioritäten, Drag-&-Drop-Reihenfolge |
+
+`supabase/schema.sql` enthält immer den vollständigen aktuellen Stand und ist für neue Installationen gedacht.
+
 ## Hinweis zum kostenlosen Tarif
 
 Supabase pausiert kostenlose Projekte nach etwa einer Woche ohne Aktivität. Im Dashboard lässt sich das Projekt
@@ -64,12 +79,15 @@ index.html           Seitenaufbau
 style.css            Aussehen (neutral, Hell-/Dunkelmodus)
 app.js               Logik: Anmeldung, Daten laden/ändern, Echtzeit-Updates
 config.js            Supabase-URL und anon-Key
-supabase/schema.sql  Tabellen, Zugriffsregeln, Echtzeit
+supabase/schema.sql  Tabellen, Zugriffsregeln, Echtzeit (vollständig)
+supabase/updates/    Datenbank-Änderungen für bestehende Installationen
 ```
+
+Externe Bibliotheken werden direkt vom CDN geladen: `@supabase/supabase-js` und `sortablejs` für Drag & Drop.
 
 ## Ideen für später
 
-- Reihenfolge per Drag & Drop ändern
-- Unteraufgaben / Checklisten innerhalb einer Aufgabe
-- Prioritäten oder Fälligkeitsdaten
+- Fälligkeitsdaten
+- Unteraufgaben per Drag & Drop sortieren
+- Erledigte Aufgaben einer Liste auf einmal löschen
 - Verlauf: wer hat wann was erledigt

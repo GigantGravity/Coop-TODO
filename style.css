@@ -8,6 +8,8 @@
   --accent-text: #ffffff;
   --hover: #eef1f5;
   --danger: #dc2626;
+  --prio-high: #ea580c;
+  --prio-low: #94a3b8;
   --radius: 8px;
   color-scheme: light;
 }
@@ -23,6 +25,8 @@
     --accent-text: #0b1220;
     --hover: #272b31;
     --danger: #f87171;
+    --prio-high: #fb923c;
+    --prio-low: #64748b;
     color-scheme: dark;
   }
 }
@@ -114,8 +118,10 @@ button.danger { color: var(--danger); }
 
 /* Listen */
 .lists { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.lists li { display: flex; align-items: center; gap: 2px; }
 .lists button {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -159,9 +165,59 @@ button.danger { color: var(--danger); }
 .task-title { flex: 1; overflow-wrap: anywhere; cursor: text; }
 .task.done .task-title { text-decoration: line-through; color: var(--muted); }
 .task-row select { padding: 3px 6px; font-size: .85rem; max-width: 140px; }
-.task-note { margin: 6px 0 0 28px; color: var(--muted); font-size: .9rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.task-note { margin: 6px 0 0 50px; color: var(--muted); font-size: .9rem; white-space: pre-wrap; overflow-wrap: anywhere; }
 .task-edit { display: grid; gap: 8px; }
 .task-edit .actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+/* Prioritäten */
+.task.prio-2 { border-left: 3px solid var(--prio-high); }
+.task.prio-0 { border-left: 3px solid var(--prio-low); }
+.task.done { border-left-color: var(--border); }
+.group-header {
+  list-style: none;
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted);
+  padding: 8px 2px 2px;
+}
+.group-header.prio-2 { color: var(--prio-high); }
+.group-header.collapsed { display: none; }
+.tasks.dragging .group-header.collapsed { display: block; }
+.tasks.dragging .group-header { padding: 8px 6px; border: 1px dashed var(--border); border-radius: var(--radius); }
+.done-header { margin: 18px 0 8px; }
+
+/* Drag & Drop */
+.drag-handle {
+  cursor: grab;
+  color: var(--muted);
+  padding: 2px 4px;
+  user-select: none;
+  touch-action: none;
+  opacity: .6;
+  flex: none;
+}
+.drag-handle:hover { opacity: 1; }
+.sortable-ghost { opacity: .35; }
+.sortable-fallback { opacity: .9 !important; box-shadow: 0 6px 20px rgb(0 0 0 / .18); }
+.sortable-fallback, .sortable-fallback * { cursor: grabbing !important; }
+
+/* Unteraufgaben */
+.sub-toggle { white-space: nowrap; color: var(--muted); }
+.sub-toggle.none { opacity: .55; }
+.task:hover .sub-toggle.none { opacity: 1; }
+.sub-toggle.complete { color: var(--accent); }
+.subtasks { margin: 8px 0 2px 50px; display: grid; gap: 6px; }
+.subtasks ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.subtasks li { display: flex; align-items: center; gap: 8px; }
+.subtasks li input[type="checkbox"] { width: 16px; height: 16px; flex: none; accent-color: var(--accent); }
+.sub-title { flex: 1; overflow-wrap: anywhere; cursor: text; }
+.subtasks li.done .sub-title { text-decoration: line-through; color: var(--muted); }
+.subtasks .inline-form input { padding: 4px 8px; }
+.subtasks .inline-form button { padding: 4px 10px; }
+.task-edit .actions { align-items: center; }
+.task-edit .actions select { padding: 3px 6px; }
 
 .empty { color: var(--muted); padding: 24px 0; text-align: center; }
 
@@ -186,8 +242,12 @@ button.danger { color: var(--danger); }
   .task-form { flex-wrap: wrap; }
   .task-form input { flex-basis: 100%; }
   .task-form select { flex: 1; }
+  .task-form button { flex-basis: 100%; }
   .task-row { flex-wrap: wrap; row-gap: 6px; }
-  .task-title { flex: 1 1 calc(100% - 40px); }
-  .task-row select { margin-left: 28px; flex: 1; max-width: none; }
-  .task-note { margin-left: 28px; }
+  .task-title { flex: 1 1 calc(100% - 70px); }
+  .task-row .sub-toggle { margin-left: 44px; }
+  .task.done .task-row .sub-toggle { margin-left: 22px; }
+  .task-row select { flex: 1; min-width: 90px; max-width: none; }
+  .task-row .edit-btn { display: none; } /* Antippen des Titels öffnet die Bearbeitung */
+  .task-note, .subtasks { margin-left: 28px; }
 }

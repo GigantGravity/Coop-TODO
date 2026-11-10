@@ -67,6 +67,11 @@
 
           <form id="new-task-form" class="task-form">
             <input name="title" placeholder="Neue Aufgabe …" maxlength="300" required>
+            <select name="priority" aria-label="Priorität">
+              <option value="2">Hoch</option>
+              <option value="1" selected>Normal</option>
+              <option value="0">Niedrig</option>
+            </select>
             <select name="assigned_to" id="new-task-assignee" aria-label="Zuweisen an"></select>
             <button type="submit" class="primary">Hinzufügen</button>
           </form>
@@ -83,6 +88,8 @@
           </div>
 
           <ul id="tasks" class="tasks"></ul>
+          <h2 id="done-header" class="done-header" hidden></h2>
+          <ul id="done-tasks" class="tasks"></ul>
           <div id="no-tasks" class="empty" hidden>Keine Aufgaben.</div>
         </div>
       </main>

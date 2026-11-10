@@ -13,7 +13,7 @@ create table public.profiles (
 create table public.lists (
   id          bigint generated always as identity primary key,
   name        text not null check (char_length(name) between 1 and 100),
-  position    integer not null default 0,
+  position    double precision not null default 0,
   created_at  timestamptz not null default now()
 );
 
@@ -24,6 +24,8 @@ create table public.tasks (
   title        text not null check (char_length(title) between 1 and 300),
   note         text,
   done         boolean not null default false,
+  priority     smallint not null default 1 check (priority between 0 and 2), -- 0 niedrig, 1 normal, 2 hoch
+  position     double precision not null default 0,
   assigned_to  uuid references public.profiles (id) on delete set null,
   created_by   uuid references public.profiles (id) on delete set null default auth.uid(),
   created_at   timestamptz not null default now(),
@@ -31,6 +33,18 @@ create table public.tasks (
 );
 
 create index tasks_list_id_idx on public.tasks (list_id);
+
+-- Unteraufgaben (Checkliste innerhalb einer Aufgabe)
+create table public.subtasks (
+  id          bigint generated always as identity primary key,
+  task_id     bigint not null references public.tasks (id) on delete cascade,
+  title       text not null check (char_length(title) between 1 and 300),
+  done        boolean not null default false,
+  position    double precision not null default 0,
+  created_at  timestamptz not null default now()
+);
+
+create index subtasks_task_id_idx on public.subtasks (task_id);
 
 -- ---------------------------------------------------------------------
 -- Profil automatisch anlegen, wenn sich jemand registriert
@@ -62,14 +76,16 @@ create trigger on_auth_user_created
 alter table public.profiles enable row level security;
 alter table public.lists    enable row level security;
 alter table public.tasks    enable row level security;
+alter table public.subtasks enable row level security;
 
 create policy "Profile lesen"          on public.profiles for select to authenticated using (true);
 create policy "Eigenes Profil ändern"  on public.profiles for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
 
 create policy "Listen: alles für Angemeldete"   on public.lists for all to authenticated using (true) with check (true);
 create policy "Aufgaben: alles für Angemeldete" on public.tasks for all to authenticated using (true) with check (true);
+create policy "Unteraufgaben: alles für Angemeldete" on public.subtasks for all to authenticated using (true) with check (true);
 
 -- ---------------------------------------------------------------------
 -- Echtzeit-Updates für Listen und Aufgaben aktivieren
 -- ---------------------------------------------------------------------
-alter publication supabase_realtime add table public.lists, public.tasks, public.profiles;
+alter publication supabase_realtime add table public.lists, public.tasks, public.subtasks, public.profiles;
