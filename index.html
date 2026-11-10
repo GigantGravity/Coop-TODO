@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gemeinsame Aufgaben</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <!-- Hinweis, falls config.js noch nicht ausgefüllt ist -->
+  <section id="config-view" class="center-card" hidden>
+    <h1>Fast fertig</h1>
+    <p>Trage in <code>config.js</code> die URL und den anon-Key deines Supabase-Projekts ein.</p>
+    <p>Anleitung: siehe <code>README.md</code>.</p>
+  </section>
+
+  <!-- Anmelden / Registrieren -->
+  <section id="auth-view" class="center-card" hidden>
+    <h1 id="auth-title">Anmelden</h1>
+    <form id="auth-form">
+      <label id="name-field" hidden>Name
+        <input name="name" autocomplete="nickname" maxlength="40">
+      </label>
+      <label>E-Mail
+        <input name="email" type="email" autocomplete="email" required>
+      </label>
+      <label>Passwort
+        <input name="password" type="password" autocomplete="current-password" minlength="6" required>
+      </label>
+      <button type="submit" class="primary" id="auth-submit">Anmelden</button>
+    </form>
+    <p class="muted">
+      <a href="#" id="auth-toggle">Noch kein Konto? Registrieren</a>
+    </p>
+    <p id="auth-message" class="message" hidden></p>
+  </section>
+
+  <!-- Hauptansicht -->
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <strong>Gemeinsame Aufgaben</strong>
+      <span class="spacer"></span>
+      <span id="me" class="muted"></span>
+      <button id="logout" class="ghost">Abmelden</button>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <h2>Listen</h2>
+        <ul id="lists" class="lists"></ul>
+        <form id="new-list-form" class="inline-form">
+          <input name="name" placeholder="Neue Liste" maxlength="100" required>
+          <button type="submit" aria-label="Liste hinzufügen">+</button>
+        </form>
+      </aside>
+
+      <main class="main">
+        <div id="no-list" class="empty" hidden>Lege links eine erste Liste an.</div>
+
+        <div id="list-panel" hidden>
+          <div class="list-header">
+            <h1 id="list-title"></h1>
+            <button id="rename-list" class="ghost small">Umbenennen</button>
+            <button id="delete-list" class="ghost small danger">Löschen</button>
+          </div>
+
+          <form id="new-task-form" class="task-form">
+            <input name="title" placeholder="Neue Aufgabe …" maxlength="300" required>
+            <select name="assigned_to" id="new-task-assignee" aria-label="Zuweisen an"></select>
+            <button type="submit" class="primary">Hinzufügen</button>
+          </form>
+
+          <div class="filters">
+            <label><input type="checkbox" id="show-done" checked> Erledigte anzeigen</label>
+            <label>Zeige
+              <select id="filter-assignee">
+                <option value="all">alle</option>
+                <option value="me">nur meine</option>
+                <option value="none">nicht zugewiesene</option>
+              </select>
+            </label>
+          </div>
+
+          <ul id="tasks" class="tasks"></ul>
+          <div id="no-tasks" class="empty" hidden>Keine Aufgaben.</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+</body>
+</html>
